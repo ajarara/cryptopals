@@ -13,8 +13,9 @@
   "scripts": {
     "start": "tsdx watch",
     "build": "tsdx build",
-    "test": "tsdx test",
+    "test": "jest",
     "lint": "tsdx lint",
+    "prettier": "prettier --write '**/*.ts'",
     "prepare": "tsdx build",
     "size": "size-limit",
     "analyze": "size-limit --why"
