@@ -1,5 +1,5 @@
 
-const binaryToChar = {
+const binaryToChar: Record<number, string> = {
   [0b000000]: 	'A',
   [0b000001]: 	'B',
   [0b000010]: 	'C',
@@ -66,6 +66,22 @@ const binaryToChar = {
   [0b111111]: 	'/',
 }
 
+const chunk = (str: string, chunkSize: number) => {
+  const out = [];
+  for (let idx = 0; idx < str.length; idx += chunkSize) {
+    out.push(str.slice(idx, idx + chunkSize));
+  };
+  return out;
+}
+
 export const setOne = {
-  challengeOne: (hex: string) => (hex as any).asdf,
+  challengeOne: (hex: string) => {
+    const asBits = BigInt('0x' + hex).toString(2);
+    const padding = 8 - (asBits.length % 8)
+
+    const chunks = chunk('0'.repeat(padding) + asBits, 6);
+    return chunks
+      .map(bits => binaryToChar[parseInt(bits, 2)])
+      .join('');
+  }
 };
