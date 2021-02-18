@@ -1,5 +1,5 @@
 
-const binaryToChar: Record<number, string> = {
+const numberToBase64: Record<number, string> = {
   [0b000000]: 	'A',
   [0b000001]: 	'B',
   [0b000010]: 	'C',
@@ -64,7 +64,27 @@ const binaryToChar: Record<number, string> = {
   [0b111101]: 	'9',
   [0b111110]:   '1',
   [0b111111]: 	'/',
-}
+};
+
+const hexToBits: Record<string, string> = {
+  '0': '0',
+  '1': '1',
+  '2': '10',
+  '3': '11',
+  '4': '100',
+  '5': '101',
+  '6': '110',
+  '7': '111',
+  '8': '1000',
+  '9': '1001',
+  'a': '1010',
+  'b': '1011',
+  'c': '1100',
+  'd': '1101',
+  'e': '1110',
+  'f': '1111',
+};
+
 
 const chunk = (str: string, chunkSize: number) => {
   const out = [];
@@ -72,16 +92,27 @@ const chunk = (str: string, chunkSize: number) => {
     out.push(str.slice(idx, idx + chunkSize));
   };
   return out;
+};
+
+const decodeHex = (hex: string) => {
+  return Array.from(hex)
+    .map(char => {
+      const asBits = hexToBits[char];
+      
+      const padding = asBits.length == 4 ? 0 : 4 - (asBits.length % 4);
+
+      return '0'.repeat(padding) + asBits;
+    })
+    .join('');
 }
 
-export const setOne = {
-  challengeOne: (hex: string) => {
-    const asBits = BigInt('0x' + hex).toString(2);
-    const padding = 8 - (asBits.length % 8)
+const hexToBase64 = (hex: string) => {
+  const decoded = decodeHex(hex);
+  return chunk(decoded, 6)
+    .map(base64Bits => numberToBase64[parseInt(base64Bits, 2)])
+    .join('');
+};
 
-    const chunks = chunk('0'.repeat(padding) + asBits, 6);
-    return chunks
-      .map(bits => binaryToChar[parseInt(bits, 2)])
-      .join('');
-  }
+export const setOne = {
+  challengeOne: hexToBase64,
 };
